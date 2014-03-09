@@ -2209,7 +2209,7 @@ void interruptEmit (uv_work_t *req, int status) {
   js_work* work = static_cast<js_work*>(req->data);
   int pin = work->pin;
   Local<Value> args[] = { Integer::New(pin) };
-  node::MakeCallback(context_obj, "on", 1 /* args array size */, args);
+  node::MakeCallback(context_obj, "oninterrupt", 1 /* args array size */, args);
 
   delete req;
   // free(r);
@@ -2483,7 +2483,7 @@ void init(Handle<Object> target) {
   EXPORT(addInterruptListener);
 
   // Set context for interrupts to fire on
-  target->Set(String::New("context"), context_obj);
+  target->Set(String::New("interrupts"), context_obj);
 
   // Add callbacks for each to array
   callbacks[0] = interruptCallback0;
