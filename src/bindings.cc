@@ -2220,7 +2220,7 @@ void interruptEmit (uv_work_t *req, int status) {
 void interruptCallback0 (void) {
   js_work* work = new js_work;
   work->req.data = work;
-  work->pin = 6;
+  work->pin = 0;
 
   int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
   if (r != 0) {
@@ -2231,7 +2231,7 @@ void interruptCallback0 (void) {
 void interruptCallback1 (void) {
   js_work* work = new js_work;
   work->req.data = work;
-  work->pin = 6;
+  work->pin = 1;
 
   int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
   if (r != 0) {
@@ -2242,7 +2242,7 @@ void interruptCallback1 (void) {
 void interruptCallback2 (void) {
   js_work* work = new js_work;
   work->req.data = work;
-  work->pin = 6;
+  work->pin = 2;
 
   int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
   if (r != 0) {
@@ -2253,7 +2253,7 @@ void interruptCallback2 (void) {
 void interruptCallback3 (void) {
   js_work* work = new js_work;
   work->req.data = work;
-  work->pin = 6;
+  work->pin = 3;
 
   int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
   if (r != 0) {
@@ -2264,7 +2264,7 @@ void interruptCallback3 (void) {
 void interruptCallback4 (void) {
   js_work* work = new js_work;
   work->req.data = work;
-  work->pin = 6;
+  work->pin = 4;
 
   int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
   if (r != 0) {
@@ -2275,7 +2275,7 @@ void interruptCallback4 (void) {
 void interruptCallback5 (void) {
   js_work* work = new js_work;
   work->req.data = work;
-  work->pin = 6;
+  work->pin = 5;
 
   int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
   if (r != 0) {
