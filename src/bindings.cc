@@ -2197,32 +2197,101 @@ void UV_NOP(uv_work_t* req) { /* No operation */ }
 
 // A struct to pass around data
 // about the interrupt
-struct interruptData {
+struct js_work {
+  uv_work_t req;
   int pin;
+  Persistent<Function> callback;
+  size_t len;
 };
 
 // Interrupt emitter for pin
 void interruptEmit (uv_work_t *req, int status) {
-  interruptData* r = static_cast<interruptData* >(req->data);
-  Local<Value> args[] = { Integer::New(r->pin) };
+  js_work* work = static_cast<js_work*>(req->data);
+  int pin = work->pin;
+  Local<Value> args[] = { Integer::New(pin) };
   node::MakeCallback(context_obj, "on", 1 /* args array size */, args);
-  // delete req;
+
+  delete req;
   // free(r);
 };
 
 // This is called by wiringPi - no v8/node stuff should be called
-void interruptCallback6 (void) {
-  interruptData data;
-  data.pin = 6;
+// TODO: Fix repetition
+void interruptCallback0 (void) {
+  js_work* work = new js_work;
+  work->req.data = work;
+  work->pin = 6;
 
-  uv_work_t* uv = new uv_work_t;
-  uv->data = data;
-
-  int r = uv_queue_work(uv_default_loop(), uv, UV_NOP, interruptEmit);
+  int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
   if (r != 0) {
     // error while queueing
-    // TODO: free(data);
-    delete uv;
+    delete work;
+  }
+}
+void interruptCallback1 (void) {
+  js_work* work = new js_work;
+  work->req.data = work;
+  work->pin = 6;
+
+  int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
+  if (r != 0) {
+    // error while queueing
+    delete work;
+  }
+}
+void interruptCallback2 (void) {
+  js_work* work = new js_work;
+  work->req.data = work;
+  work->pin = 6;
+
+  int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
+  if (r != 0) {
+    // error while queueing
+    delete work;
+  }
+}
+void interruptCallback3 (void) {
+  js_work* work = new js_work;
+  work->req.data = work;
+  work->pin = 6;
+
+  int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
+  if (r != 0) {
+    // error while queueing
+    delete work;
+  }
+}
+void interruptCallback4 (void) {
+  js_work* work = new js_work;
+  work->req.data = work;
+  work->pin = 6;
+
+  int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
+  if (r != 0) {
+    // error while queueing
+    delete work;
+  }
+}
+void interruptCallback5 (void) {
+  js_work* work = new js_work;
+  work->req.data = work;
+  work->pin = 6;
+
+  int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
+  if (r != 0) {
+    // error while queueing
+    delete work;
+  }
+}
+void interruptCallback6 (void) {
+  js_work* work = new js_work;
+  work->req.data = work;
+  work->pin = 6;
+
+  int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
+  if (r != 0) {
+    // error while queueing
+    delete work;
   }
 }
 
@@ -2250,6 +2319,13 @@ IMPLEMENT(addInterruptListener) {
 
   pin  = args[0]->NumberValue();
   edge = args[1]->NumberValue();
+
+  // Pins 0-6 have callbacks until copy/paste is avoided
+  if (pin < 0 || pin > 6) {
+    ThrowException(Exception::TypeError(
+      String::New("I've only implemented interrupt callbacks on pins 0 to 6 for now.")));
+    return scope.Close(Undefined());
+  }
 
   // CHECK: Allowed values
   // INT_EDGE_FALLING, INT_EDGE_RISING, INT_EDGE_BOTH or INT_EDGE_SETUP
@@ -2410,7 +2486,32 @@ void init(Handle<Object> target) {
   target->Set(String::New("context"), context_obj);
 
   // Add callbacks for each to array
+  callbacks[0] = interruptCallback0;
+  callbacks[1] = interruptCallback1;
+  callbacks[2] = interruptCallback2;
+  callbacks[3] = interruptCallback3;
+  callbacks[4] = interruptCallback4;
+  callbacks[5] = interruptCallback5;
   callbacks[6] = interruptCallback6;
+  // callbacks[7] = interruptCallback7;
+  // callbacks[8] = interruptCallback8;
+  // callbacks[9] = interruptCallback9;
+  // callbacks[10] = interruptCallback10;
+  // callbacks[11] = interruptCallback11;
+  // callbacks[12] = interruptCallback12;
+  // callbacks[13] = interruptCallback13;
+  // callbacks[14] = interruptCallback14;
+  // callbacks[15] = interruptCallback15;
+  // callbacks[16] = interruptCallback16;
+  // callbacks[17] = interruptCallback17;
+  // callbacks[18] = interruptCallback18;
+  // callbacks[19] = interruptCallback19;
+  // callbacks[20] = interruptCallback20;
+  // callbacks[21] = interruptCallback21;
+  // callbacks[22] = interruptCallback22;
+  // callbacks[23] = interruptCallback23;
+  // callbacks[24] = interruptCallback24;
+  // callbacks[25] = interruptCallback25;
 }
 
 NODE_MODULE(wiringPi, init)
