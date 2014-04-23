@@ -2306,7 +2306,6 @@ IMPLEMENT(addInterruptListener) {
   pin  = args[0]->NumberValue();
   edge = args[1]->NumberValue();
 
-  // Pins 0-6 have callbacks until copy/paste is avoided
   if (pin < 0 || pin > 16) {
     ThrowException(Exception::TypeError(
       String::New("Interrupt callbacks are only available on pins 0 to 16.")));
@@ -2325,52 +2324,6 @@ IMPLEMENT(addInterruptListener) {
 
   return scope.Close(Undefined());
 }
-
-/*
-IMPLEMENT(wiringPiISR) {
-  HandleScope scope;
-  int pin;
-  int edge;
-  Handle<Function> fn;
-
-  // CHECK: Number of argument
-  if (args.Length() != 3) {
-    ThrowException(Exception::TypeError(
-      String::New("Wrong number of arguments.")));
-    return scope.Close(Undefined());
-  }
-
-  // CHECK: Argument types
-  if (!args[0]->IsNumber() || !args[1]->IsNumber()) {
-    ThrowException(Exception::TypeError(
-      String::New("Incorrect argument types. Numbers expected.")));
-    return scope.Close(Undefined());
-  }
-
-  pin  = args[0]->NumberValue();
-  edge = args[1]->NumberValue();
-
-  // CHECK: Allowed values
-  // INT_EDGE_FALLING, INT_EDGE_RISING, INT_EDGE_BOTH or INT_EDGE_SETUP
-  if (edge != INT_EDGE_FALLING && edge != INT_EDGE_RISING && edge != INT_EDGE_BOTH && edge != INT_EDGE_SETUP) {
-    ThrowException(Exception::TypeError(
-      String::New("Incorrect edge value. INT_EDGE_FALLING, INT_EDGE_RISING, INT_EDGE_BOTH or INT_EDGE_SETUP expected.")));
-    return scope.Close(Undefined());
-  }
-
-  if (!args[2]->IsFunction()) {
-    ThrowException(Exception::TypeError(
-      String::New("Function expected.")));
-    return scope.Close(Undefined());
-  }
-
-  fn = Handle<Function>::Cast(args[2]);
-
-  ::wiringPiISR(pin, edge, &interruptCallback);
-
-  return scope.Close(Undefined());
-}
-*/
 
 void init(Handle<Object> target) {
   // Setup
