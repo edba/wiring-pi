@@ -2200,6 +2200,7 @@ void UV_NOP(uv_work_t* req) { /* No operation */ }
 struct js_work {
   uv_work_t req;
   int pin;
+  unsigned int deltaTime;
   Persistent<Function> callback;
   size_t len;
 };
@@ -2208,25 +2209,31 @@ struct js_work {
 void interruptEmit (uv_work_t *req, int status) {
   js_work* work = static_cast<js_work*>(req->data);
   int pin = work->pin;
-  Local<Value> args[] = { Integer::New(pin) };
-  node::MakeCallback(context_obj, "oninterrupt", 1 /* args array size */, args);
+  Local<Value> args[] = { Integer::New(pin),  Integer::NewFromUnsigned(work->deltaTime) };
+  node::MakeCallback(context_obj, "oninterrupt", 2 /* args array size */, args);
 
   delete req;
   // free(r);
 };
 
+//array to store last interrupt microseconds
+unsigned int interruptTimes[17];
+
 // These callbacks are called by wiringPi thread -
 // no v8/node stuff should be called
 void interruptCallbackForPin(int pin) {
+  unsigned int currentTime = micros();  
   js_work* work = new js_work;
   work->req.data = work;
   work->pin = pin;
+  work->deltaTime = currentTime - interruptTimes[pin];
 
   int r = uv_queue_work(uv_default_loop(), &work->req, UV_NOP, interruptEmit);
   if (r != 0) {
     // error while queueing
     delete work;
   }
+  interruptTimes[pin] = currentTime;
 }
 
 void interruptCallback0 (void) {
@@ -2320,6 +2327,7 @@ IMPLEMENT(addInterruptListener) {
     return scope.Close(Undefined());
   }
 
+  interruptTimes[pin] = micros();
   ::wiringPiISR(pin, edge, (*callbacks[pin]));
 
   return scope.Close(Undefined());
